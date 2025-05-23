@@ -1,98 +1,179 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const registerFormContainer = document.getElementById('register-form');
-    const loginFormContainer = document.getElementById('login-form');
-    const loggedInArea = document.getElementById('logged-in-area');
-    const welcomeUsername = document.getElementById('welcome-username');
+    console.log('DOM Content Loaded!');
+    // DOM Elements
+    const banEndDateElement = document.getElementById('ban-end-date');
+    const timeRemainingElement = document.getElementById('time-remaining');
+    const banLieButton = document.getElementById('ban-lie');
+    const banChoresButton = document.getElementById('ban-chores');
+    const banAttitudeButton = document.getElementById('ban-attitude');
+    const banManualButton = document.getElementById('ban-manual');
+    const manualBanSection = document.getElementById('manual-ban-section');
+    const manualBanDaysInput = document.getElementById('manual-ban-days');
+    const applyManualBanButton = document.getElementById('apply-manual-ban');
+    const banHistoryList = document.getElementById('ban-history-list');
 
-    const showLoginLink = document.getElementById('show-login');
-    const showRegisterLink = document.getElementById('show-register');
+    // Constants for localStorage keys
+    const BAN_END_DATE_KEY = 'gameBanEndDate';
+    const BAN_HISTORY_KEY = 'gameBanHistory';
 
-    const registrationForm = document.getElementById('registrationForm');
-    const loginForm = document.getElementById('loginForm');
-    const logoutButton = document.getElementById('logout-button');
+    let banEndDate = null; // Stores the Date object of the ban end
+    let banHistory = []; // Stores an array of ban objects
 
     // --- Helper Functions ---
-    function showRegister() {
-        registerFormContainer.style.display = 'block';
-        loginFormContainer.style.display = 'none';
-        loggedInArea.style.display = 'none';
+
+    /**
+     * Loads ban data from localStorage.
+     */
+    function loadBanData() {
+        const storedEndDate = localStorage.getItem(BAN_END_DATE_KEY);
+        if (storedEndDate) {
+            banEndDate = new Date(storedEndDate);
+        } else {
+            banEndDate = null;
+        }
+
+        const storedHistory = localStorage.getItem(BAN_HISTORY_KEY);
+        if (storedHistory) {
+            banHistory = JSON.parse(storedHistory);
+        } else {
+            banHistory = [];
+        }
     }
 
-    function showLogin() {
-        registerFormContainer.style.display = 'none';
-        loginFormContainer.style.display = 'block';
-        loggedInArea.style.display = 'none';
+    /**
+     * Saves ban data to localStorage.
+     */
+    function saveBanData() {
+        localStorage.setItem(BAN_END_DATE_KEY, banEndDate ? banEndDate.toISOString() : '');
+        localStorage.setItem(BAN_HISTORY_KEY, JSON.stringify(banHistory));
     }
 
-    function showLoggedIn(username) {
-        registerFormContainer.style.display = 'none';
-        loginFormContainer.style.display = 'none';
-        loggedInArea.style.display = 'block';
-        welcomeUsername.textContent = username;
+    /**
+     * Updates the display of the current ban status and time remaining.
+     */
+    function updateBanStatusDisplay() {
+        const now = new Date();
+
+        if (banEndDate && banEndDate > now) {
+            // Active ban
+            const timeDiff = banEndDate.getTime() - now.getTime();
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+            banEndDateElement.textContent = `Banned until: ${banEndDate.toLocaleString()}`;
+            timeRemainingElement.textContent = `Time remaining: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+        } else {
+            // No active ban or ban expired
+            banEndDateElement.textContent = 'No active ban.';
+            timeRemainingElement.textContent = '';
+            banEndDate = null; // Clear expired ban
+            saveBanData(); // Save cleared ban status
+        }
+    }
+
+    /**
+     * Adds a new ban duration to the current ban end date.
+     * @param {number} days - Number of days to add to the ban.
+     * @param {string} reason - The reason for the ban.
+     */
+    function addBan(days, reason) {
+        console.log(`addBan called with days: ${days}, reason: ${reason}`);
+        const now = new Date();
+        let currentBanEnd = banEndDate || now; // If no active ban, start from now
+
+        // Ensure the new ban extends from the current ban end date, or from now if current ban is in the past
+        if (currentBanEnd < now) {
+            currentBanEnd = now;
+        }
+
+        const newBanEnd = new Date(currentBanEnd.getTime() + days * 24 * 60 * 60 * 1000);
+        banEndDate = newBanEnd;
+        console.log('New banEndDate:', banEndDate);
+
+        // Add to history
+        banHistory.push({
+            date: now.toISOString(),
+            reason: reason,
+            durationDays: days,
+            newEndDate: newBanEnd.toISOString()
+        });
+
+        saveBanData();
+        updateBanStatusDisplay();
+        renderBanHistory();
+        // alert(`Ban applied! Banned for ${days} days due to: ${reason}.`); // Removed alert for automated testing
+    }
+
+    /**
+     * Renders the ban history list.
+     */
+    function renderBanHistory() {
+        console.log('renderBanHistory called. Current history:', banHistory);
+        banHistoryList.innerHTML = ''; // Clear existing list
+        if (banHistory.length === 0) {
+            const listItem = document.createElement('li');
+            listItem.textContent = 'No ban history yet.';
+            banHistoryList.appendChild(listItem);
+            return;
+        }
+
+        // Sort history by date, newest first
+        const sortedHistory = [...banHistory].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        sortedHistory.forEach(ban => {
+            const listItem = document.createElement('li');
+            const banDate = new Date(ban.date).toLocaleDateString();
+            const banReason = ban.reason;
+            const banDuration = ban.durationDays;
+
+            listItem.innerHTML = `
+                <span class="date">${banDate}</span>
+                <span class="reason">${banReason} (${banDuration} days)</span>
+            `;
+            banHistoryList.appendChild(listItem);
+        });
     }
 
     // --- Event Listeners ---
-    showLoginLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        showLogin();
+    banLieButton.addEventListener('click', () => {
+        console.log('Lie button clicked');
+        addBan(banLieButton.dataset.days, 'Lying');
+    });
+    banChoresButton.addEventListener('click', () => {
+        console.log('No Chores button clicked');
+        addBan(banChoresButton.dataset.days, 'Not doing chores');
+    });
+    banAttitudeButton.addEventListener('click', () => {
+        console.log('Bad Attitude button clicked');
+        addBan(banAttitudeButton.dataset.days, 'Bad attitude');
     });
 
-    showRegisterLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        showRegister();
+    banManualButton.addEventListener('click', () => {
+        manualBanSection.style.display = manualBanSection.style.display === 'none' ? 'block' : 'none';
+        manualBanDaysInput.value = ''; // Clear input when toggling
     });
 
-    registrationForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const username = e.target.username.value;
-        const password = e.target.password.value;
-
-        // Basic validation (can be expanded)
-        if (!username || !password) {
-            alert('Please enter both username and password.');
+    applyManualBanButton.addEventListener('click', () => {
+        const days = parseInt(manualBanDaysInput.value, 10);
+        if (isNaN(days) || days <= 0) {
+            // alert('Please enter a valid number of days for the manual ban.'); // Removed alert for automated testing
+            console.error('Invalid number of days for manual ban.');
             return;
         }
-
-        // Check if user already exists (using localStorage)
-        if (localStorage.getItem(username)) {
-            alert('Username already exists. Please choose another one or login.');
-            return;
-        }
-
-        // Store user credentials (insecure, for demo purposes only!)
-        localStorage.setItem(username, password);
-        alert('Registration successful! Please login.');
-        showLogin(); // Switch to login form after registration
-        registrationForm.reset();
+        addBan(days, 'Manual ban');
+        manualBanSection.style.display = 'none'; // Hide manual section after applying
     });
 
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const username = e.target.username.value;
-        const password = e.target.password.value;
+    // --- Initial Load and Interval for Status Update ---
+    loadBanData();
+    updateBanStatusDisplay();
+    renderBanHistory();
 
-        // Check if user exists and password matches
-        const storedPassword = localStorage.getItem(username);
-        if (storedPassword && storedPassword === password) {
-            // Simulate login session
-            sessionStorage.setItem('loggedInUser', username);
-            showLoggedIn(username);
-            loginForm.reset();
-        } else {
-            alert('Invalid username or password.');
-        }
-    });
-
-    logoutButton.addEventListener('click', () => {
-        sessionStorage.removeItem('loggedInUser');
-        showLogin(); // Show login form after logout
-    });
-
-    // --- Initial State Check ---
-    const loggedInUser = sessionStorage.getItem('loggedInUser');
-    if (loggedInUser) {
-        showLoggedIn(loggedInUser);
-    } else {
-        showRegister(); // Default to register form if not logged in
-    }
+    // Update ban status every second
+    setInterval(() => {
+        console.log('updateBanStatusDisplay called by interval. Current banEndDate:', banEndDate);
+        updateBanStatusDisplay();
+    }, 1000);
 });

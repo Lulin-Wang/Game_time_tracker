@@ -3,45 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register & Login</title>
+    <title>Game Ban Tracker</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <!-- Registration Form -->
-        <div id="register-form" class="form-container">
-            <h2>Register</h2>
-            <form id="registrationForm">
-                <label for="reg-username">Username:</label>
-                <input type="text" id="reg-username" name="username" required>
+        <h1>Game Ban Tracker</h1>
 
-                <label for="reg-password">Password:</label>
-                <input type="password" id="reg-password" name="password" required>
-
-                <button type="submit">Register</button>
-            </form>
-            <p>Already have an account? <a href="#" id="show-login">Login here</a></p>
+        <div class="ban-status">
+            <p>Current Ban Status:</p>
+            <p id="ban-end-date">No active ban.</p>
+            <p id="time-remaining"></p>
         </div>
 
-        <!-- Login Form -->
-        <div id="login-form" class="form-container" style="display: none;">
-            <h2>Login</h2>
-            <form id="loginForm">
-                <label for="login-username">Username:</label>
-                <input type="text" id="login-username" name="username" required>
-
-                <label for="login-password">Password:</label>
-                <input type="password" id="login-password" name="password" required>
-
-                <button type="submit">Login</button>
-            </form>
-            <p>Don't have an account? <a href="#" id="show-register">Register here</a></p>
+        <div class="ban-actions">
+            <h2>Apply New Ban:</h2>
+            <button id="ban-lie" data-days="7">Lie (1 Week)</button>
+            <button id="ban-chores" data-days="2">No Chores (2 Days)</button>
+            <button id="ban-attitude" data-days="3">Bad Attitude (3 Days)</button>
+            <button id="ban-manual">Manual Ban</button>
         </div>
 
-        <!-- Logged In Area -->
-        <div id="logged-in-area" style="display: none;">
-            <h2>Welcome, <span id="welcome-username"></span>!</h2>
-            <button id="logout-button">Logout</button>
+        <div id="manual-ban-section" style="display: none;">
+            <h3>Manual Ban Duration:</h3>
+            <input type="number" id="manual-ban-days" placeholder="Number of days" min="1">
+            <button id="apply-manual-ban">Apply Manual Ban</button>
+        </div>
+
+        <div class="ban-history">
+            <h2>Ban History:</h2>
+            <ul id="ban-history-list">
+                <!-- Ban history items will be added here by JavaScript -->
+            </ul>
         </div>
     </div>
 

@@ -1,78 +1,155 @@
 body {
-    font-family: sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f4f4f4;
+    background-color: #e0f7fa; /* Light blue background */
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .container {
-    background-color: #fff;
-    padding: 2em;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 300px;
-}
-
-.form-container h2 {
+    background-color: #ffffff;
+    padding: 2.5em;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px;
     text-align: center;
+    box-sizing: border-box;
+}
+
+h1 {
+    color: #00796b; /* Dark teal */
+    margin-bottom: 1.5em;
+    font-size: 2.2em;
+    font-weight: 600;
+}
+
+h2 {
+    color: #00796b;
+    margin-top: 1.5em;
     margin-bottom: 1em;
+    font-size: 1.5em;
 }
 
-label {
-    display: block;
-    margin-bottom: 0.5em;
+h3 {
+    color: #00796b;
+    margin-top: 1em;
+    margin-bottom: 0.8em;
+    font-size: 1.2em;
 }
 
-input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 0.5em;
-    margin-bottom: 1em;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    box-sizing: border-box; /* Include padding in width */
+.ban-status {
+    background-color: #e0f2f7; /* Lighter blue */
+    padding: 1.2em;
+    border-radius: 8px;
+    margin-bottom: 1.5em;
+    border: 1px solid #b2ebf2;
 }
 
-button {
-    width: 100%;
-    padding: 0.7em;
-    background-color: #007bff;
+.ban-status p {
+    margin: 0.5em 0;
+    font-size: 1.1em;
+    color: #37474f; /* Dark grey text */
+}
+
+#ban-end-date {
+    font-weight: bold;
+    color: #d32f2f; /* Red for ban date */
+    font-size: 1.2em;
+}
+
+#time-remaining {
+    font-style: italic;
+    color: #546e7a;
+    font-size: 1em;
+}
+
+.ban-actions button {
+    width: calc(50% - 10px); /* Two buttons per row */
+    padding: 0.8em 1.2em;
+    background-color: #26a69a; /* Teal */
     color: white;
     border: none;
-    border-radius: 3px;
+    border-radius: 5px;
     cursor: pointer;
+    font-size: 1em;
+    margin: 5px;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.ban-actions button:hover {
+    background-color: #00897b; /* Darker teal */
+}
+
+#manual-ban-section {
+    background-color: #f1f8e9; /* Light green */
+    padding: 1.2em;
+    border-radius: 8px;
+    margin-top: 1.5em;
+    border: 1px solid #c5e1a5;
+}
+
+#manual-ban-days {
+    width: calc(100% - 20px);
+    padding: 0.6em;
     margin-bottom: 1em;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-p {
+    border: 1px solid #aed581;
+    border-radius: 4px;
+    box-sizing: border-box;
     text-align: center;
-    font-size: 0.9em;
+    font-size: 1em;
 }
 
-a {
-    color: #007bff;
-    text-decoration: none;
+#apply-manual-ban {
+    width: 100%;
+    background-color: #689f38; /* Darker green */
+    margin-top: 0.5em;
 }
 
-a:hover {
-    text-decoration: underline;
+#apply-manual-ban:hover {
+    background-color: #558b2f;
 }
 
-#logged-in-area h2 {
-    text-align: center;
-    margin-bottom: 1em;
+.ban-history {
+    margin-top: 2em;
+    text-align: left;
 }
 
-#logout-button {
-    background-color: #dc3545;
+#ban-history-list {
+    list-style: none;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #cfd8dc;
+    border-radius: 8px;
+    background-color: #eceff1; /* Light grey */
 }
 
-#logout-button:hover {
-    background-color: #c82333;
+#ban-history-list li {
+    padding: 0.8em 1.2em;
+    border-bottom: 1px solid #cfd8dc;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95em;
+    color: #455a64;
+}
+
+#ban-history-list li:last-child {
+    border-bottom: none;
+}
+
+#ban-history-list li span.date {
+    font-weight: bold;
+    color: #3f51b5; /* Indigo */
+}
+
+#ban-history-list li span.reason {
+    font-style: italic;
+    color: #78909c;
 }
