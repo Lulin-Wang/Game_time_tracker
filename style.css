@@ -19,6 +19,7 @@ body {
     max-width: 450px;
     text-align: center;
     box-sizing: border-box;
+    position: relative; /* For logout button positioning */
 }
 
 h1 {
@@ -40,6 +41,91 @@ h3 {
     margin-top: 1em;
     margin-bottom: 0.8em;
     font-size: 1.2em;
+}
+
+.introduction {
+    font-size: 1.1em;
+    color: #546e7a;
+    line-height: 1.6;
+    margin-bottom: 2em;
+}
+
+.auth-section {
+    margin-top: 2em;
+    border-top: 1px solid #cfd8dc;
+    padding-top: 2em;
+}
+
+.form-container {
+    background-color: #f9f9f9;
+    padding: 1.5em;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 1.5em;
+}
+
+.form-container h3 {
+    text-align: center;
+    margin-bottom: 1em;
+    color: #37474f;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5em;
+    text-align: left;
+    color: #455a64;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"] {
+    width: calc(100% - 20px); /* Adjust for padding */
+    padding: 0.8em;
+    margin-bottom: 1.2em;
+    border: 1px solid #b0bec5;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 1em;
+}
+
+button {
+    width: 100%;
+    padding: 0.9em;
+    background-color: #26a69a; /* Teal */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin-top: 0.5em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #00897b; /* Darker teal */
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+p {
+    text-align: center;
+    font-size: 0.95em;
+    color: #607d8b;
+}
+
+a {
+    color: #3f51b5; /* Indigo */
+    text-decoration: none;
+    font-weight: 500;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 .ban-status {
@@ -152,4 +238,22 @@ h3 {
 #ban-history-list li span.reason {
     font-style: italic;
     color: #78909c;
+}
+
+.logout-section {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+#logout-button {
+    width: auto;
+    padding: 0.6em 1.2em;
+    background-color: #ef5350; /* Red */
+    font-size: 0.9em;
+    margin: 0;
+}
+
+#logout-button:hover {
+    background-color: #d32f2f; /* Darker red */
 }

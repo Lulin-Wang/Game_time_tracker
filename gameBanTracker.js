@@ -1,5 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM Content Loaded!');
+    // Check if user is logged in, otherwise redirect to welcome page
+    if (!sessionStorage.getItem('loggedInUser')) {
+        window.location.href = 'welcome.html';
+        return; // Stop execution if not logged in
+    }
+
     // DOM Elements
     const banEndDateElement = document.getElementById('ban-end-date');
     const timeRemainingElement = document.getElementById('time-remaining');
@@ -11,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const manualBanDaysInput = document.getElementById('manual-ban-days');
     const applyManualBanButton = document.getElementById('apply-manual-ban');
     const banHistoryList = document.getElementById('ban-history-list');
+    const logoutButton = document.getElementById('logout-button'); // New logout button
 
     // Constants for localStorage keys
     const BAN_END_DATE_KEY = 'gameBanEndDate';
@@ -79,7 +85,6 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {string} reason - The reason for the ban.
      */
     function addBan(days, reason) {
-        console.log(`addBan called with days: ${days}, reason: ${reason}`);
         const now = new Date();
         let currentBanEnd = banEndDate || now; // If no active ban, start from now
 
@@ -90,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const newBanEnd = new Date(currentBanEnd.getTime() + days * 24 * 60 * 60 * 1000);
         banEndDate = newBanEnd;
-        console.log('New banEndDate:', banEndDate);
 
         // Add to history
         banHistory.push({
@@ -103,14 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
         saveBanData();
         updateBanStatusDisplay();
         renderBanHistory();
-        // alert(`Ban applied! Banned for ${days} days due to: ${reason}.`); // Removed alert for automated testing
     }
 
     /**
      * Renders the ban history list.
      */
     function renderBanHistory() {
-        console.log('renderBanHistory called. Current history:', banHistory);
         banHistoryList.innerHTML = ''; // Clear existing list
         if (banHistory.length === 0) {
             const listItem = document.createElement('li');
@@ -137,18 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Event Listeners ---
-    banLieButton.addEventListener('click', () => {
-        console.log('Lie button clicked');
-        addBan(banLieButton.dataset.days, 'Lying');
-    });
-    banChoresButton.addEventListener('click', () => {
-        console.log('No Chores button clicked');
-        addBan(banChoresButton.dataset.days, 'Not doing chores');
-    });
-    banAttitudeButton.addEventListener('click', () => {
-        console.log('Bad Attitude button clicked');
-        addBan(banAttitudeButton.dataset.days, 'Bad attitude');
-    });
+    banLieButton.addEventListener('click', () => addBan(banLieButton.dataset.days, 'Lying'));
+    banChoresButton.addEventListener('click', () => addBan(banChoresButton.dataset.days, 'Not doing chores'));
+    banAttitudeButton.addEventListener('click', () => addBan(banAttitudeButton.dataset.days, 'Bad attitude'));
 
     banManualButton.addEventListener('click', () => {
         manualBanSection.style.display = manualBanSection.style.display === 'none' ? 'block' : 'none';
@@ -158,12 +151,16 @@ document.addEventListener('DOMContentLoaded', () => {
     applyManualBanButton.addEventListener('click', () => {
         const days = parseInt(manualBanDaysInput.value, 10);
         if (isNaN(days) || days <= 0) {
-            // alert('Please enter a valid number of days for the manual ban.'); // Removed alert for automated testing
-            console.error('Invalid number of days for manual ban.');
+            console.error('Invalid number of days for manual ban.'); // Keep this console.error for dev purposes
             return;
         }
         addBan(days, 'Manual ban');
         manualBanSection.style.display = 'none'; // Hide manual section after applying
+    });
+
+    logoutButton.addEventListener('click', () => {
+        sessionStorage.removeItem('loggedInUser'); // Clear logged-in state
+        window.location.href = 'welcome.html'; // Redirect to welcome page
     });
 
     // --- Initial Load and Interval for Status Update ---
@@ -172,8 +169,5 @@ document.addEventListener('DOMContentLoaded', () => {
     renderBanHistory();
 
     // Update ban status every second
-    setInterval(() => {
-        console.log('updateBanStatusDisplay called by interval. Current banEndDate:', banEndDate);
-        updateBanStatusDisplay();
-    }, 1000);
+    setInterval(updateBanStatusDisplay, 1000);
 });

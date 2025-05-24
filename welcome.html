@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Game Ban Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Game Ban Tracker!</h1>
+        <p class="introduction">
+            This website helps you manage and track game time bans for misbehaviors.
+            Set custom ban durations for specific actions like lying, not doing chores,
+            or bad attitude. Keep a clear record of all bans and see the time remaining
+            on any active ban.
+        </p>
+
+        <!-- Login/Register Section -->
+        <div class="auth-section">
+            <h2>Get Started</h2>
+            <div id="register-form" class="form-container">
+                <h3>Register</h3>
+                <form id="registrationForm">
+                    <label for="reg-username">Username:</label>
+                    <input type="text" id="reg-username" name="username" required>
+
+                    <label for="reg-password">Password:</label>
+                    <input type="password" id="reg-password" name="password" required>
+
+                    <button type="submit">Register</button>
+                </form>
+                <p>Already have an account? <a href="#" id="show-login">Login here</a></p>
+            </div>
+
+            <div id="login-form" class="form-container" style="display: none;">
+                <h3>Login</h3>
+                <form id="loginForm">
+                    <label for="login-username">Username:</label>
+                    <input type="text" id="login-username" name="username" required>
+
+                    <label for="login-password">Password:</label>
+                    <input type="password" id="login-password" name="password" required>
+
+                    <button type="submit">Login</button>
+                </form>
+                <p>Don't have an account? <a href="#" id="show-register">Register here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="welcome.js"></script>
+</body>
+</html>
